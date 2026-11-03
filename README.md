@@ -10,7 +10,7 @@ a fix is a tag bump here instead of a fleet-wide sync — and half-rolled-out
 changes (like [simp/puppetsync#84][84]) become structurally impossible.
 See [simp/puppetsync#85][85] for the background and migration plan.
 
-This repo holds two kinds of workflow, and composite actions:
+This repo holds two kinds of workflow, plus shared composite actions:
 
 - **Reusable workflows** (`on: workflow_call`) — called by a thin shim in each
   consuming repo. The original purpose of this repo.
@@ -20,9 +20,8 @@ This repo holds two kinds of workflow, and composite actions:
   a task is fleet-wide and needs no per-repo configuration: one file to change,
   idempotent, and it covers repos outside puppetsync's sync set for free.
 - **Composite actions** (`.github/actions/<name>/action.yml`) — steps shared
-  across repos that have to run inside a job the repo owns, such as the
-  setup for an acceptance job with a repo-specific matrix. Kept here rather
-  than in a repo of their own, so there is one repo to manage.
+  across repos that must run inside a job the consuming repo owns, such as
+  setting up an acceptance job that has a repo-specific matrix.
 
 [reusing]: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [84]: https://github.com/simp/puppetsync/issues/84
@@ -99,11 +98,12 @@ keeping rollouts deliberate and reviewable.
 
 ## What belongs here (and what doesn't)
 
-- **Here**: workflow *logic* shared across repos (`on: workflow_call`), and
-  org-level scheduled jobs that operate on the fleet through the API (`org_*`).
-- **Here, too**: composite actions shared across repos, under
-  `.github/actions/`. Older actions live in their own `simp/github-action-*`
-  repos, e.g.
+- **Here**: workflow *logic* shared across repos (`on: workflow_call`),
+  org-level scheduled jobs that operate on the fleet through the API
+  (`org_*`), and composite actions shared across repos
+  (`.github/actions/<name>/`). New actions go here rather than in a repo of
+  their own, so there is one repo to version, review and protect. Older
+  actions still live in their own `simp/github-action-*` repos, e.g.
   [github-action-build-and-sign-pkg-single-rpm](https://github.com/simp/github-action-build-and-sign-pkg-single-rpm).
 - **The consuming repo**: triggers, per-repo configuration (matrices,
   nodesets), and anything repo-specific. If a workflow needs per-repo

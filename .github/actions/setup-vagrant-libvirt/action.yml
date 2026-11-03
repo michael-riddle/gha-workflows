@@ -1,12 +1,9 @@
 ---
-name: 'Setup Vagrant with libvirt'
+name: 'Set up Vagrant with libvirt'
 description: >-
   Install Vagrant, vagrant-libvirt and libvirt on an Ubuntu runner from
   ppa:evgeni/vagrant, the Actions cache, or HashiCorp's apt repository,
   so a Launchpad outage doesn't fail the job.
-branding:
-  icon: 'box'
-  color: 'blue'
 
 inputs:
   cache-only:
@@ -27,7 +24,7 @@ inputs:
     required: false
     default: 'noble'
   vagrant-version:
-    description: "HashiCorp's apt version of vagrant, used when the PPA can't be"
+    description: "HashiCorp's apt version of vagrant, for the fallback when the PPA can't be used"
     required: false
     default: '2.4.9-1'
   vagrant-libvirt-version:
